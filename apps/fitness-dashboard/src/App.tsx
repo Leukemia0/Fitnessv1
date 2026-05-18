@@ -4,7 +4,11 @@ import { ClerkProvider, Show, useClerk, useAuth } from "@clerk/react";
 import { publishableKeyFromHost } from "@clerk/react/internal";
 import { shadcn } from "@clerk/themes";
 import { QueryClientProvider, useQueryClient } from "@tanstack/react-query";
-import { setAuthTokenGetter } from "@fitness/api-client-react";
+import { setAuthTokenGetter, setBaseUrl } from "@fitness/api-client-react";
+
+if (import.meta.env.VITE_API_URL) {
+  setBaseUrl(import.meta.env.VITE_API_URL);
+}
 
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -20,7 +24,6 @@ import { ProgressPage } from "@/pages/progress";
 import { SettingsPage } from "@/pages/settings";
 import NotFound from "@/pages/not-found";
 
-// REQUIRED CLERK CONFIGURATION
 const clerkPubKey = publishableKeyFromHost(
   window.location.hostname,
   import.meta.env.VITE_CLERK_PUBLISHABLE_KEY,
@@ -87,12 +90,10 @@ const clerkAppearance = {
   },
 };
 
-// Redirect helpers based on auth state
 function HomeRedirect() {
   const [, setLocation] = useLocation();
   
   // Wouter doesn't have a <Redirect> component out of the box in this setup easily
-  // Let's use a simple redirect component
   const Redirect = ({ to }: { to: string }) => {
     useEffect(() => { setLocation(to); }, [setLocation, to]);
     return null;
@@ -110,7 +111,6 @@ function HomeRedirect() {
   );
 }
 
-// Ensure routes that need auth redirect to / if not signed in
 function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
   const [, setLocation] = useLocation();
   
