@@ -1,0 +1,35 @@
+services:
+  # 1. Backend API (Node.js)
+  - type: web
+    name: fitness-hub-api
+    env: node
+    buildCommand: pnpm install && pnpm --filter @fitness/api-server run build && pnpm --filter @fitness/api-server run migrate
+    startCommand: pnpm --filter @fitness/api-server run start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: CLERK_PUBLISHABLE_KEY
+        sync: false
+      - key: CLERK_SECRET_KEY
+        sync: false
+
+  # 2. Frontend (React SPA)
+  - type: web
+    name: fitness-hub-ui
+    env: static
+    buildCommand: pnpm install && pnpm --filter @fitness/fitness-dashboard run build
+    staticPublishPath: apps/fitness-dashboard/dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_CLERK_PUBLISHABLE_KEY
+        sync: false
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: fitness-hub-api
+          envVarKey: RENDER_EXTERNAL_URL
