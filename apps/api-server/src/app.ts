@@ -48,6 +48,10 @@ app.use(
   })),
 );
 
+app.get("/ping", (req, res) => {
+  res.send("OK");
+});
+
 app.use("/api", router);
 
 export default app;
