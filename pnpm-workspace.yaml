@@ -2,7 +2,6 @@ packages:
   - apps/*
   - lib/*
   - lib/integrations/*
-  - scripts
 
 allowBuilds:
   '@clerk/shared': true
@@ -31,16 +30,9 @@ catalog:
   wouter: ^3.3.5
   zod: 3.25.76
 
-minimumReleaseAge: 1440
-
-minimumReleaseAgeExclude:
-  - stripe-replit-sync
-
 onlyBuiltDependencies:
   - '@swc/core'
   - esbuild
   - msw
   - unrs-resolver
   - '@clerk/shared'
-
-
