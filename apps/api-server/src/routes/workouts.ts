@@ -36,9 +36,10 @@ router.get("/workouts", requireAuth, async (req: any, res) => {
 router.post("/workouts", requireAuth, async (req: any, res) => {
   try {
     const body = LogWorkoutBody.parse(req.body);
+    const dateStr = body.date.toISOString().split("T")[0];
     const [workout] = await db
       .insert(workoutsTable)
-      .values({ ...body, userId: req.userId })
+      .values({ ...body, date: dateStr, userId: req.userId })
       .returning();
     res.status(201).json(workout);
   } catch (err) {

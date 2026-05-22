@@ -41,9 +41,10 @@ router.get("/nutrition", requireAuth, async (req: any, res) => {
 router.post("/nutrition", requireAuth, async (req: any, res) => {
   try {
     const body = LogNutritionBody.parse(req.body);
+    const dateStr = body.date.toISOString().split("T")[0];
     const [entry] = await db
       .insert(nutritionTable)
-      .values({ ...body, userId: req.userId })
+      .values({ ...body, date: dateStr, userId: req.userId })
       .returning();
     res.status(201).json(entry);
   } catch (err) {

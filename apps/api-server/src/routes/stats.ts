@@ -177,9 +177,10 @@ router.get("/stats/weight-history", requireAuth, async (req: any, res) => {
 router.post("/stats/weight-history", requireAuth, async (req: any, res) => {
   try {
     const body = LogWeightBody.parse(req.body);
+    const dateStr = body.date.toISOString().split("T")[0];
     const [entry] = await db
       .insert(weightEntriesTable)
-      .values({ ...body, userId: req.userId })
+      .values({ ...body, date: dateStr, userId: req.userId })
       .returning();
     res.status(201).json(entry);
   } catch (err) {
